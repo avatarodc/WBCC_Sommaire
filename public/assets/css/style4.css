@@ -1,0 +1,74 @@
+.selected-row {
+    background-color: #f5c6cb !important;
+}
+
+.no-border-footer {
+    border-top: none;
+    padding-top: 0;
+}
+
+.simple-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.simple-table th,
+.simple-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.simple-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.simple-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.simple-table tr:hover {
+    background-color: #ddd;
+}
+
+#justificationEditor {
+    height: 250px;
+    /* Ajustez la hauteur selon vos besoins */
+    border: 1px solid #ccc;
+    /* Ajoutez une bordure pour que cela ressemble à un champ de texte */
+    padding: 10px;
+    /* Ajoutez du padding pour un meilleur espacement */
+    overflow-y: auto;
+    /* Ajoutez un défilement vertical si le contenu dépasse la hauteur */
+}
+
+.modal-content {
+    border-radius: 10px;
+}
+
+.modal-header {
+    background-color: #c00000;
+}
+
+.modal-header .modal-title {
+    color: white;
+}
+
+.modal-body p {
+    font-size: 1.1rem;
+}
+
+.modal-body i {
+    margin-right: 8px;
+    color: #6c757d;
+}
+
+.modal-footer {
+    border-top: none;
+}
+
+.modal-backdrop {
+    display: none !important;
+}

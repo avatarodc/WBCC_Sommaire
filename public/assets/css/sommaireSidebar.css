@@ -1,0 +1,187 @@
+    .sidebar {
+        height: calc(100vh - 100px);
+        overflow-y: auto;
+        position: sticky;
+        /* top: 20px; */
+        border-right: 1px solid #dee2e6;
+    }
+
+    .sidebar.custom-sidebar {
+        width: 25rem !important;
+        padding: 1.5rem;
+        border-right: 2px solid #c00000;
+    }
+
+    .section-item {
+        cursor: pointer;
+        padding: 8px 12px;
+        margin: 4px 0;
+        border-radius: 4px;
+        transition: background-color 0.2s;
+        margin-bottom: 0.5rem;
+        background: white;
+        border: 1px solid #edf2f7;
+        transition: all 0.3s ease;
+    }
+
+    .section-item:hover {
+        background-color: #f8fafc;
+        transform: translateX(4px);
+    }
+
+    .section-item.active {
+        border-left: 3px solid #c00000;
+        background-color: rgb(245, 213, 208);
+    }
+
+    .section-toggle i {
+        transition: transform 0.3s ease;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .main-content {
+        height: calc(100vh - 100px);
+        overflow-y: auto;
+        padding: 20px;
+    }
+
+    .section-toggle.collapsed i {
+        transform: rotate(-90deg);
+    }
+
+    .subsections {
+        padding-left: 20px;
+        margin-top: 5px;
+    }
+
+    .subsections.collapsed {
+        display: none;
+    }
+
+    .section-toggle {
+        cursor: pointer;
+        width: 20px;
+        text-align: center;
+    }
+
+    .section-toggle.collapsed i {
+        transform: rotate(-90deg);
+    }
+
+    .section-content-area {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 40px;
+        color: #6c757d;
+    }
+
+    .section-number {
+        min-width: 35px;
+        text-align: center;
+        background-color: #e8f4ff;
+        border: 1px solid #cce5ff;
+    }
+
+    .subsections {
+        max-height: 1000px;
+        transition: max-height 0.3s ease-in-out;
+    }
+
+    .subsections.collapsed {
+        max-height: 0;
+    }
+
+    /* Animation pour les transitions */
+    .section-item {
+        animation: slideIn 0.3s ease-out;
+    }
+
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateX(-10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+
+    /* Style spécial pour le niveau actif */
+    .section-item.active .section-number {
+        background-color: #3490dc;
+        color: white;
+        border-color: #2779bd;
+    }
+
+    /* Effet de hover amélioré */
+    .section-item:hover .section-number {
+        transform: scale(1.05);
+        transition: transform 0.2s ease;
+    }
+
+    .empty-state i {
+        font-size: 48px;
+        margin-bottom: 20px;
+    }
+
+    #sommaire-row {
+        background-color: #f8f9fa;
+        border: 2px solidrgb(163, 156, 156);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        padding: 2rem;
+        min-height: 100vh;
+        position: relative;
+        width: 100%;
+        overflow-x: hidden;
+        border-radius: 8px;
+        margin: 15px;
+    }
+
+
+    /* Ajoutez ce CSS dans votre fichier */
+    /* .sommaire-option {
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 2px solid #dee2e6;
+    }
+
+    .sommaire-option:hover {
+        border-color: #007bff;
+        background-color: rgba(0, 123, 255, 0.05);
+    }
+
+    .sommaire-option.selected {
+        border-color: #007bff;
+        background-color: rgba(0, 123, 255, 0.1);
+    }
+
+    .sommaire-option .custom-control {
+        pointer-events: none;
+    }
+
+    .sommaire-option label {
+        margin-bottom: 0;
+    } */
+
+
+    #saveConfirmationModal .modal-content {
+        border-radius: 0.3rem;
+    }
+
+    #saveConfirmationModal .modal-body {
+        padding-bottom: 1.5rem;
+    }
