@@ -21,7 +21,7 @@ $active = "red";
                     <i class="fas fa-plus" style="color: #ffffff"></i>
                     Ajouter un projet
                 </a>
-                <a type="button" rel="tooltip" title="Paramétrer"
+                <a hidden type="button" rel="tooltip" title="Paramétrer"
                     href="<?= linkto('GestionInterne', 'parametrageSubvention') ?>"
                     class="btn btn btn-sm btn-red  ml-1">
                     <i class="fas fa-cog" style="color: #ffffff"></i>
@@ -75,10 +75,8 @@ $active = "red";
                                     <i class="fas fa-edit text-white"></i>
                                 </a>
                                 <button type="button" class="btn btn-danger btn-sm delete-project"
-                                    data-id="<?= $projet->idProjet ?>"
-                                    data-projet-nom="<?= $projet->nomProjet ?>"
-                                    data-toggle="tooltip"
-                                    title="Supprimer">
+                                    data-id="<?= $projet->idProjet ?>" data-projet-nom="<?= $projet->nomProjet ?>"
+                                    data-toggle="tooltip" title="Supprimer">
                                     <i class="fas fa-trash"></i>
                                 </button>
         </div>
@@ -94,7 +92,8 @@ $active = "red";
 
 
 <!-- Modal de suppression -->
-<div class="modal fade" id="deleteProjectModal" tabindex="-1" role="dialog" aria-labelledby="deleteProjectModalLabel" aria-hidden="true">
+<div class="modal fade" id="deleteProjectModal" tabindex="-1" role="dialog" aria-labelledby="deleteProjectModalLabel"
+    aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header bg-white border-0">
@@ -107,7 +106,8 @@ $active = "red";
             </div>
             <div class="modal-body text-center">
                 <h4 class="font-weight-bold mb-4">ATTENTION !</h4>
-                <p>Cette action est irréversible. En confirmant, toutes les données associées à ce projet seront définitivement supprimées et ne pourront pas être récupérées.</p>
+                <p>Cette action est irréversible. En confirmant, toutes les données associées à ce projet seront
+                    définitivement supprimées et ne pourront pas être récupérées.</p>
             </div>
             <div class="modal-footer border-0 justify-content-center">
                 <button type="button" id="confirmDelete" class="btn btn-danger px-4">
@@ -118,4 +118,4 @@ $active = "red";
     </div>
 </div>
 
-
+<script src="<?= URLROOT ?>/public/assets/js/projet/projet.js"></script>

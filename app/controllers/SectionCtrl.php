@@ -3,10 +3,12 @@
 class SectionCtrl extends Controller
 {
     private $sectionModel;
+    private  $documentModel;
 
     public function __construct()
     {
         $this->sectionModel = $this->model('Section');
+        $this->documentModel = $this->model('Document');
     }
 
     public function index($sommaireId = null)
@@ -233,8 +235,212 @@ class SectionCtrl extends Controller
                 'error' => 'Erreur lors de la suppression'
             ]);
         }
-
         error_log('Fin de la méthode delete');
+        exit();
+    }
+
+
+    /**
+     * Récupère tous les documents (pour la recherche RYM)
+     */
+    public function getAllDocuments()
+    {
+        $this->view = false;
+        ob_clean();
+        header('Content-Type: application/json');
+
+        try {
+            // Utiliser la nouvelle méthode
+            $documents = $this->documentModel->getAllDocuments();
+
+            // Formatter les documents pour l'API
+            $formattedDocs = array_map(function ($doc) {
+                return [
+                    'id' => $doc->idDocument,
+                    'titre' => $doc->nomDocument,
+                    'type' => pathinfo($doc->urlDocument, PATHINFO_EXTENSION),
+                    'dateCreation' => $doc->createDate,
+                    'auteur' => $doc->auteur
+                ];
+            }, $documents);
+
+            echo json_encode([
+                'success' => true,
+                'documents' => $formattedDocs
+            ]);
+        } catch (Exception $e) {
+            error_log('Erreur lors de la récupération des documents: ' . $e->getMessage());
+            echo json_encode([
+                'success' => false,
+                'error' => 'Erreur lors de la récupération des documents : ' . $e->getMessage()
+            ]);
+        }
+        exit();
+    }
+    /**
+     * Upload d'un nouveau document
+     */
+    public function uploadSectionDocument()
+    {
+        $this->view = false;
+        ob_clean();
+        header('Content-Type: application/json');
+
+        try {
+            // Vérification des données
+            if (!isset($_FILES['file']) || !isset($_POST['sectionId'])) {
+                throw new Exception('Données manquantes');
+            }
+
+            $file = $_FILES['file'];
+            $sectionId = $_POST['sectionId'];
+
+            // Vérifications basiques
+            if ($file['error'] !== UPLOAD_ERR_OK) {
+                throw new Exception('Erreur lors du téléchargement');
+            }
+
+            // Générer un numéro unique pour le document
+            $idUser = Role::connectedUser()->idUtilisateur;
+
+            $numeroDocument = uniqid('DOC' . $idUser . '_', true);
+
+            // Utiliser URLROOT pour définir le chemin
+            $uploadBaseDir = $_SERVER['DOCUMENT_ROOT'] . '/Extranet_WBCC-FR/public/projet/annexe/';
+
+            // Créer le répertoire s'il n'existe pas
+            if (!is_dir($uploadBaseDir)) {
+                mkdir($uploadBaseDir, 0755, true);
+            }
+
+            $extension = pathinfo($file['name'], PATHINFO_EXTENSION);
+            $fileName = $numeroDocument . '.' . $extension;
+            $destination = $uploadBaseDir . $fileName;
+
+            // Débogage
+            error_log('Chemin de destination complet : ' . $destination);
+            error_log('Fichier temporaire : ' . $file['tmp_name']);
+
+            // Déplacer le fichier
+            if (!move_uploaded_file($file['tmp_name'], $destination)) {
+                // Log de l'erreur de déplacement
+                error_log('Impossible de déplacer le fichier');
+                throw new Exception('Erreur lors du déplacement du fichier');
+            }
+
+            // Sauvegarder dans la base de données
+            $documentId = $this->documentModel->save(
+                $numeroDocument,
+                $file['name'],
+                $fileName,
+                isset($_SESSION['user']) ? $_SESSION['user']->nomUtilisateur : '',
+                isset($_SESSION['user']) ? $_SESSION['user']->idUtilisateur : null,
+                isset($_SESSION['user']) ? $_SESSION['user']->guidUtilisateur : ''
+            );
+
+            if (!$documentId) {
+                throw new Exception('Erreur lors de l\'enregistrement du document');
+            }
+
+            // Lier le document à la section
+            $this->sectionModel->linkDocument($sectionId, $documentId);
+
+            echo json_encode([
+                'success' => true,
+                'message' => 'Document uploadé avec succès',
+                'document' => [
+                    'id' => $documentId,
+                    'nom' => $file['name'],
+                    'url' => URLROOT . '/projet/annexe/' . $fileName
+                ]
+            ]);
+        } catch (Exception $e) {
+            error_log('Erreur complète : ' . $e->getMessage());
+            echo json_encode([
+                'success' => false,
+                'error' => $e->getMessage()
+            ]);
+        }
+        exit();
+    }
+
+
+    /**
+     * Lie un document existant à une section
+     */
+    public function linkDocumentToSection()
+    {
+        $this->view = false;
+        ob_clean();
+        header('Content-Type: application/json');
+
+        try {
+            $data = json_decode(file_get_contents('php://input'), true);
+
+            if (!isset($data['sectionId']) || !isset($data['documentId'])) {
+                error_log('Données manquantes : ' . print_r($data, true));
+                throw new Exception('Données manquantes');
+            }
+
+            $sectionId = $data['sectionId'];
+            $documentId = $data['documentId'];
+
+            error_log("Tentative de liaison - Données reçues : " . print_r($data, true));
+
+            $result = $this->sectionModel->linkDocument($sectionId, $documentId);
+
+            if ($result) {
+                echo json_encode([
+                    'success' => true,
+                    'message' => 'Document lié avec succès'
+                ]);
+            } else {
+                error_log("Échec de la liaison du document");
+                throw new Exception('Erreur lors de la liaison du document');
+            }
+        } catch (Exception $e) {
+            error_log('Exception dans linkDocumentToSection : ' . $e->getMessage());
+            echo json_encode([
+                'success' => false,
+                'error' => $e->getMessage()
+            ]);
+        }
+        exit();
+    }
+
+    /**
+     * Récupère les documents liés à une section
+     */
+    public function getSectionDocuments($sectionId)
+    {
+        $this->view = false;
+        ob_clean();
+        header('Content-Type: application/json');
+
+        try {
+            $documents = $this->sectionModel->getDocuments($sectionId);
+
+            $formattedDocs = array_map(function ($doc) {
+                return [
+                    'id' => $doc->idDocument,
+                    'numero' => $doc->numeroDocument,
+                    'nom' => $doc->nomDocument,
+                    'url' => $doc->urlDocument,
+                    'dateCreation' => $doc->createDate,
+                    'auteur' => $doc->auteur
+                ];
+            }, $documents);
+
+            echo json_encode([
+                'success' => true,
+                'documents' => $formattedDocs
+            ]);
+        } catch (Exception $e) {
+            echo json_encode([
+                'success' => false,
+                'error' => $e->getMessage()
+            ]);
+        }
         exit();
     }
 }

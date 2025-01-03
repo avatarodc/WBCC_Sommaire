@@ -6,6 +6,10 @@ let mockData = {
 };
 let sommaires = [];
 let activeSection = null;
+
+let selectedFile = null;
+let selectedFileType = null; // 'local' ou 'RYM'
+let activeSectionId = null;
 // Initialisation au chargement du document
 $(document).ready(function () {
     if (CONFIG.hasSommaire) {
@@ -125,15 +129,26 @@ function toggleSubsections(event, element) {
     $(element).closest('.section-item').children('.subsections').toggleClass('collapsed');
 }
 
+
+function triggerFileUpload(sectionId) {
+    // Délègue la gestion au DocumentHandler
+    DocumentHandler.openFileModal(sectionId);
+}
+
+
 function showSection(sectionId) {
     const section = mockData.sections.find(s => s.idSection == sectionId);
     if (!section) return;
 
     // Sauvegarder l'ID de la section active
     localStorage.setItem('activeSection', sectionId);
+
     // Mise à jour de l'UI
     $('.section-item').removeClass('active');
     $(`.section-item[data-section-id="${sectionId}"]`).addClass('active');
+
+    // Charger les documents de la section immédiatement
+    DocumentHandler.loadSectionDocuments(sectionId);
 
     const html = `
         <div class="section-content-area">
@@ -142,6 +157,9 @@ function showSection(sectionId) {
                     <h4>${section.numeroSection} - ${section.titreSection}</h4>
                 </div>
                 <div class="btn-group">
+                    <button class="btn btn-sm btn-outline-secondary" onclick="triggerFileUpload(${section.idSection})">
+                        <i class="fas fa-upload"></i> Document
+                    </button>
                     <button class="btn btn-sm btn-outline-primary" onclick="addSubSection(${section.idSection})">
                         <i class="fas fa-plus"></i> Sous-section
                     </button>
@@ -308,6 +326,9 @@ function selectSection(sectionId) {
     // Mise à jour de l'UI
     $('.section-item').removeClass('active');
     $(`.section-item[data-section-id="${sectionId}"]`).addClass('active');
+
+    // Charger les documents de la section immédiatement
+    DocumentHandler.loadSectionDocuments(sectionId);
 
     // Affichage du contenu
     const contentHtml = `

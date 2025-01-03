@@ -423,13 +423,13 @@ class GestionInterneCtrl extends Controller
         $projet = null;  // Changer false par null
         $immeubles = $this->immeubleModel->getAllImmeubles();
         $sommaire = null;
-
+        $immeuble = null;
         // Vérifier si l'ID est valide
         $id = !empty($id) ? $id : 0;
 
         if ($id != 0) {
             $projet = $this->projetModel->findProjetByColumnValue("idProjet", $id);
-
+            $immeuble = $this->immeubleModel->findImmeubleById($projet->idImmeuble);
             if ($projet) {
                 // Charger le sommaire associé au projet
                 $sommaireModel = $this->model('Sommaire');
@@ -446,6 +446,7 @@ class GestionInterneCtrl extends Controller
             "projet" => $projet ?? null,
             "immeubles" => $immeubles,
             "sommaire" => $sommaire,
+            "immeuble" => $immeuble,
             "title" => "Gestion du projet"
         ];
 

@@ -4,13 +4,10 @@ class Projet extends Model
 {
     public function getProjets()
     {
-        $this->db->query("SELECT p.idProjet, p.nomProjet, p.numeroProjet, p.descriptionProjet, p.createDate , i.adresse 
-                          FROM wbcc_projet p
-                          LEFT JOIN wbcc_immeuble i ON p.idImmeuble = i.idImmeuble");
+        $this->db->query("SELECT * FROM wbcc_projet");
         $res = $this->db->resultSet();
         return $res;
     }
-
 
     public function findProjetByColumnValue($column, $value)
     {
@@ -20,7 +17,6 @@ class Projet extends Model
         return $res;
     }
 
-
     /**
      * Supprime un projet par son ID
      * @param int $id l'ID du projet à supprimer
@@ -28,7 +24,6 @@ class Projet extends Model
      */
     public function deleteProjetById($id)
     {
-
         // Suppression d'un projet
         $this->db->query("DELETE FROM wbcc_projet WHERE idProjet = :idProjet");
         $this->db->bind("idProjet", $id);

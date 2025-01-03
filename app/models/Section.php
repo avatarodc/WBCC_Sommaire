@@ -213,4 +213,102 @@ class Section extends Model
             ->where("idSection_parentF = $parentId")
             ->doQuery();
     }
+
+    public function linkDocument($sectionId, $documentId)
+    {
+        try {
+            // Logs détaillés
+            error_log("Début de linkDocument");
+            error_log("Section ID: $sectionId");
+            error_log("Document ID: $documentId");
+
+            // Vérification complète du document
+            $this->db->query("SELECT * FROM wbcc_document WHERE idDocument = :documentId");
+            $this->db->bind(':documentId', $documentId);
+            $document = $this->db->single();
+
+            // Log du résultat de recherche du document
+            if (!$document) {
+                error_log("ERREUR : Document introuvable");
+                error_log("Requête : SELECT * FROM wbcc_document WHERE idDocument = $documentId");
+                return false;
+            }
+
+            // Log des détails du document
+            error_log("Détails du document : " . json_encode($document));
+
+            // Vérification de la section
+            $this->db->query("SELECT * FROM wbcc_section WHERE idSection = :sectionId");
+            $this->db->bind(':sectionId', $sectionId);
+            $section = $this->db->single();
+
+            // Log du résultat de recherche de la section
+            if (!$section) {
+                error_log("ERREUR : Section introuvable");
+                error_log("Requête : SELECT * FROM wbcc_section WHERE idSection = $sectionId");
+                return false;
+            }
+
+            // Log des détails de la section
+            error_log("Détails de la section : " . json_encode($section));
+
+            // Vérification de l'existence du lien
+            $this->db->query("SELECT COUNT(*) as count FROM wbcc_section_document 
+                              WHERE idSectionF = :sectionId AND idDocumentF = :documentId");
+            $this->db->bind(':sectionId', $sectionId);
+            $this->db->bind(':documentId', $documentId);
+            $linkExists = $this->db->single();
+
+            // Log de l'existence du lien
+            error_log("Nombre de liens existants : " . $linkExists->count);
+
+            // Si le lien existe déjà, retourner true
+            if ($linkExists->count > 0) {
+                error_log("Lien déjà existant");
+                return true;
+            }
+
+            // Insertion du lien
+            $this->db->query("INSERT INTO wbcc_section_document 
+                              (idSectionF, idDocumentF, numeroDocument) 
+                              VALUES (:sectionId, :documentId, :numeroDocument)");
+
+            $this->db->bind(':sectionId', $sectionId);
+            $this->db->bind(':documentId', $documentId);
+            $this->db->bind(':numeroDocument', $document->numeroDocument);
+
+            $result = $this->db->execute();
+
+            // Log du résultat de l'insertion
+            if ($result) {
+                error_log("Liaison réussie");
+                return true;
+            } else {
+                error_log("ERREUR : Échec de l'insertion du lien");
+                return false;
+            }
+        } catch (Exception $e) {
+            // Log de l'exception
+            error_log("EXCEPTION FATALE : " . $e->getMessage());
+            error_log("Trace : " . $e->getTraceAsString());
+            return false;
+        }
+    }
+
+    // 
+    public function getDocuments($sectionId)
+    {
+        $this->db->query("SELECT d.* 
+                      FROM wbcc_document d
+                      JOIN wbcc_section_document sd ON d.idDocument = sd.idDocumentF
+                      WHERE sd.idSectionF = :sectionId 
+                      AND d.etatDocument = 1
+                      ORDER BY d.createDate DESC");
+
+        $this->db->bind(':sectionId', $sectionId);
+
+        return $this->db->resultSet();
+    }
+
+    
 }

@@ -7,7 +7,7 @@ error_reporting(E_ALL);
 
 <?php
 if (!isset($projet) || !is_object($projet)) {
-    echo '<div class="alert alert-danger">Erreur: Données du projet invalides</div>';
+    // echo '<div class="alert alert-danger">Erreur: Données du projet invalides</div>';
     return;
 }
 $idProjet = $projet->idProjet;
@@ -30,6 +30,12 @@ $hasSommaire = isset($sommaire) && is_object($sommaire) && !empty($sommaire->idS
             },
             sommaire: {
                 getAll: '<?= linkTo("Sommaire", "getAll") ?>'
+            },
+            sectionDocument: {
+                getAllDocuments: '<?= linkTo("Section", "getAllDocuments") ?>',
+                uploadDocument: '<?= linkTo("Section", "uploadSectionDocument") ?>',
+                linkDocument: '<?= linkTo("Section", "linkDocumentToSection") ?>',
+                getDocuments: '<?= linkTo("Section", "getSectionDocuments") ?>'
             }
         }
     };
@@ -57,7 +63,11 @@ $hasSommaire = isset($sommaire) && is_object($sommaire) && !empty($sommaire->idS
 
 <div class="container-fluid" id="sommaire-container">
     <legend class="text-center legend font-weight-bold text-uppercase" style="margin-top: 2rem;">
-        <i class="icofont-info-circle my-1"></i>2-Sommaire
+        <i class="icofont-info-circle my-1"></i>2-Sommaire <button onclick="onclickExporter()" type="button"
+            rel="tooltip" title="Ajouter" style="background-color:  darkblue;"
+            class="btn btn btn-sm text-white my-1  ml-1" data-toggle="modal" data-target="#modalCritere">
+            <i class="fas fa-eye" style="color: #ffffff"></i>
+        </button>
     </legend>
     <div class="row mb-4 mt-4" id="sommaire-row">
         <div class="col-12">
@@ -75,7 +85,9 @@ $hasSommaire = isset($sommaire) && is_object($sommaire) && !empty($sommaire->idS
                     <div class="col-md-3 p-0">
                         <div class="sidebar custom-sidebar">
                             <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h5 class="mb-0">Sommaire</h5>
+                                <div class="project-info mb-4">
+                                    <h2> <?= $sommaire ? htmlspecialchars($sommaire->titreSommaire) : "" ?></h2>
+                                </div>
                                 <button class="btn btn-sm btn-red" onclick="addMainSection()">
                                     <i class="fas fa-plus"></i>
                                 </button>
@@ -87,10 +99,6 @@ $hasSommaire = isset($sommaire) && is_object($sommaire) && !empty($sommaire->idS
                     <!-- Contenu principal -->
                     <div class="col-md-9">
                         <div class="main-content">
-                            <div class="project-info mb-4">
-                                <h2>Titre du sommaire : <?php echo htmlspecialchars($sommaire->titreSommaire); ?></h2>
-                            </div>
-
                             <div id="section-content">
                                 <div class="empty-state">
                                     <i class="fas fa-arrow-left"></i>
@@ -103,13 +111,25 @@ $hasSommaire = isset($sommaire) && is_object($sommaire) && !empty($sommaire->idS
             <?php endif; ?>
         </div>
     </div>
+    <div class="card mt-4">
+        <div class="card-header bg-red text-white">
+            <h5 class="card-title">Documents associés</h5>
+        </div>
+        <div class="card-body" id="section-documents-list">
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle mr-2"></i>
+                Sélectionnez une section pour voir ses documents
+            </div>
+        </div>
+    </div>
 </div>
 
 
 
 <!-- Modal création sommaire -->
 <div class="modal fade" id="createSommaireModal">
-    <div class="modal-dialog modal-lg"> <!-- Changé en modal-lg pour plus de largeur -->
+    <div class="modal-dialog modal-lg">
+        <!-- Changé en modal-lg pour plus de largeur -->
         <div class="modal-content">
             <div class="modal-header bg-red text-white">
                 <h5 class="modal-title">
@@ -126,10 +146,12 @@ $hasSommaire = isset($sommaire) && is_object($sommaire) && !empty($sommaire->idS
                                 <div class="card sommaire-option h-100" data-type="empty">
                                     <div class="card-body d-flex flex-column justify-content-center">
                                         <div class="custom-control custom-radio">
-                                            <input type="radio" id="sommaireVide" name="sommaireType" value="empty" class="custom-control-input" checked>
+                                            <input type="radio" id="sommaireVide" name="sommaireType" value="empty"
+                                                class="custom-control-input" checked>
                                             <label class="custom-control-label" for="sommaireVide">
                                                 <h6 class="mb-2"><i class="fas fa-file mr-2"></i>Sommaire vide</h6>
-                                                <p class="text-muted mb-0 small">Créer un nouveau sommaire sans contenu</p>
+                                                <p class="text-muted mb-0 small">Créer un nouveau sommaire sans contenu
+                                                </p>
                                             </label>
                                         </div>
                                     </div>
@@ -139,7 +161,8 @@ $hasSommaire = isset($sommaire) && is_object($sommaire) && !empty($sommaire->idS
                                 <div class="card sommaire-option h-100" data-type="existing">
                                     <div class="card-body d-flex flex-column justify-content-center">
                                         <div class="custom-control custom-radio">
-                                            <input type="radio" id="sommaireExistant" name="sommaireType" value="existing" class="custom-control-input">
+                                            <input type="radio" id="sommaireExistant" name="sommaireType"
+                                                value="existing" class="custom-control-input">
                                             <label class="custom-control-label" for="sommaireExistant">
                                                 <h6 class="mb-2"><i class="fas fa-copy mr-2"></i>Sommaire existant</h6>
                                                 <p class="text-muted mb-0 small">Copier un sommaire existant</p>
@@ -212,8 +235,8 @@ $hasSommaire = isset($sommaire) && is_object($sommaire) && !empty($sommaire->idS
                 <div class="modal-body p-4">
                     <div class="form-group">
                         <label class="font-weight-bold text-dark mb-2">Titre de la section</label>
-                        <input type="text" class="form-control form-control-lg border-primary"
-                            name="titreSection" placeholder="Entrez le titre de la section" required>
+                        <input type="text" class="form-control form-control-lg border-primary" name="titreSection"
+                            placeholder="Entrez le titre de la section" required>
                     </div>
                     <input type="hidden" name="idSommaireF" value="<?php echo $sommaire->idSommaire; ?>">
                     <input type="hidden" name="idSection_parentF" id="parentSectionId">
@@ -256,7 +279,8 @@ $hasSommaire = isset($sommaire) && is_object($sommaire) && !empty($sommaire->idS
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
-                <p>Êtes-vous sûr de vouloir supprimer cette section ? Cette action supprimera également toutes les sous-sections.</p>
+                <p>Êtes-vous sûr de vouloir supprimer cette section ? Cette action supprimera également toutes les
+                    sous-sections.</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
@@ -267,9 +291,88 @@ $hasSommaire = isset($sommaire) && is_object($sommaire) && !empty($sommaire->idS
 </div>
 
 
+<!-- Modal de sélection de fichier -->
+<div class="modal fade" id="fileSelectionModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Sélection d'un fichier</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Onglets -->
+                <ul class="nav nav-tabs" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="localFileTab" data-toggle="tab" href="#localFileContent">
+                            <i class="fas fa-upload mr-2"></i>Fichier local
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="ryuFileTab" data-toggle="tab" href="#ryuFileContent">
+                            <i class="fas fa-database mr-2"></i>Fichiers existants
+                        </a>
+                    </li>
+                </ul>
 
+                <!-- Contenu des onglets -->
+                <div class="tab-content mt-3">
+                    <!-- Onglet fichier local -->
+                    <div class="tab-pane fade show active" id="localFileContent">
+                        <div class="form-group">
+                            <label>Sélectionnez un fichier depuis votre ordinateur</label>
+                            <input type="file" class="form-control file-input" id="localFileInput">
+                            <small class="form-text text-muted">
+                                Formats supportés : PDF, DOC, DOCX, XLS, XLSX, PNG, JPG, JPEG
+                            </small>
+                        </div>
+                    </div>
+
+                    <!-- Onglet fichiers RYM -->
+
+                    <div class="tab-pane fade" id="ryuFileContent">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-striped">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>Nom du fichier</th>
+                                        <th>Type</th>
+                                        <th>Date</th>
+                                        <th>Auteur</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ryuFileResults">
+                                    <!-- La liste des documents sera injectée ici -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="ryuLoadingSpinner" class="text-center p-3 d-none">
+                            <i class="fas fa-spinner fa-spin"></i> Chargement des documents...
+                        </div>
+                        <div id="ryuEmptyState" class="text-center p-3 d-none">
+                            <i class="fas fa-folder-open"></i>
+                            <p class="text-muted">Aucun document disponible</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                <button type="button" class="btn btn-primary" id="validateFileSelection" disabled>
+                    Valider la sélection
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script src="<?= URLROOT ?>/public/assets/js/projet/documentHandler.js"></script>
 <script src="<?= URLROOT ?>/public/assets/js/projet/sommaire.js"></script>
-
 <script>
     document.getElementById('msform').addEventListener('submit', function(event) {
         const sommaireType = document.querySelector('input[name="sommaireType"]:checked').value;

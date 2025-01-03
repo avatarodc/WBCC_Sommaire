@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Feedback>
+    <!--Data provided by the Feedback form on error-->
+    <Title>AutoSubmit_x0020_Issue</Title>
+    <Feature>AutoSubmit</Feature>
+    <Severity>_x0032_3</Severity>
+    <Tier>Workgroup</Tier>
+    <VersionFound>_x0032_4</VersionFound>
+    <BuildFound>_x0032_04</BuildFound>
+    <ErrorDescription>
+        <Description>System.ObjectDisposedException:_x0020_Impossible_x0020_d_x0027_accéder_x0020_à_x0020_un_x0020_objet_x0020_supprimé._x000D__x000A_Nom_x0020_de_x0020_l_x0027_objet_x00A0_:_x0020__x0027_ActApplication_x0027_._x000D__x000A__x0020__x0020__x0020_à_x0020_System.Windows.Forms.Control.CreateHandle_x0028__x0029__x000D__x000A__x0020__x0020__x0020_à_x0020_System.Windows.Forms.Form.CreateHandle_x0028__x0029__x000D__x000A__x0020__x0020__x0020_à_x0020_System.Windows.Forms.Control.get_Handle_x0028__x0029__x000D__x000A__x0020__x0020__x0020_à_x0020_System.Windows.Forms.ContainerControl.FocusActiveControlInternal_x0028__x0029__x000D__x000A__x0020__x0020__x0020_à_x0020_System.Windows.Forms.Form.SetVisibleCore_x0028_Boolean_x0020_value_x0029__x000D__x000A__x0020__x0020__x0020_à_x0020_System.Windows.Forms.Application.ThreadContext.RunMessageLoopInner_x0028_Int32_x0020_reason_x002C__x0020_ApplicationContext_x0020_context_x0029__x000D__x000A__x0020__x0020__x0020_à_x0020_System.Windows.Forms.Application.ThreadContext.RunMessageLoop_x0028_Int32_x0020_reason_x002C__x0020_ApplicationContext_x0020_context_x0029__x000D__x000A__x0020__x0020__x0020_à_x0020_Act.Application.SingletonApp.Run_x0028_Form_x0020_startupForm_x0029__x000D__x000A__x0020__x0020__x0020_à_x0020_Act.Application.Act.Main_x0028_String_x005B__x005D__x0020_args_x0029_</Description>
+    </ErrorDescription>
+    <MachineName>LAPTOP-WBCC023</MachineName>
+    <ProcessorInfo>
+        <Processor>_x0031_1th_x0020_Gen_x0020_Intel_x0028_R_x0029__x0020_Core_x0028_TM_x0029__x0020_i7-1165G7_x0020__x0040__x0020_2.80GHz_x002C__x0020_GenuineIntel</Processor>
+    </ProcessorInfo>
+    <OperatingSystem>
+        <OSVersion>_x0031_9045</OSVersion>
+        <Language>_x0031_036</Language>
+        <SystemDirectory>C:_x005C_windows_x005C_system32</SystemDirectory>
+        <WindowsDirectory>C:_x005C_windows</WindowsDirectory>
+        <Locale>_x0030_40c</Locale>
+        <TimeZone>_x0036_0</TimeZone>
+        <OSName>Microsoft_x0020_Windows_x0020_10_x0020_Entreprise</OSName>
+    </OperatingSystem>
+    <PrinterInfo>
+        <DriverName>Xerox_x0020_VersaLink_x0020_C7020_x0020_V4_x0020_PCL6</DriverName>
+        <DriverPath>C:_x005C_windows_x005C_System32_x005C_DriverStore_x005C_FileRepository_x005C_ntprint.inf_amd64_906f4b456b58c7f3_x005C_Amd64_x005C_mxdwdrv.dll</DriverPath>
+        <DriverVersion>_x0034_</DriverVersion>
+        <DriverSupportedPlatform>Windows_x0020_x64</DriverSupportedPlatform>
+    </PrinterInfo>
+    <WindowsRole>
+        <WindowsUserRole>User_x0020_is_x0020_a_x0020_regular_x0020_Windows_x0020_User.</WindowsUserRole>
+    </WindowsRole>
+    <IPAddress>fe80::e377:b854:6b4c:d223_x0025_3_x007C_192.168.1.115_x007C_</IPAddress>
+    <MACAddress>A4:6B:B6:FC:B3:13_x007C_A4:6B:B6:FC:B3:14_x007C_A6:6B:B6:FC:B3:13_x007C_A4:6B:B6:FC:B3:17_x007C_00:FF:2C:D5:06:B7_x007C_32:69:20:52:41:53_x007C_34:09:20:52:41:53_x007C_36:6C:20:52:41:53_x007C_20:41:53:59:4E:FF_x007C_00:FF:8F:EE:79:87_x007C_9C:EB:E8:2F:B5:4F_x007C_</MACAddress>
+    <Product>ACT2400Premium</Product>
+    <SubmisstionID>_x0038_ffbb675-6adc-440b-8256-8b86376ef0f3</SubmisstionID>
+    <DotNetVersion>_x0034_.0.30319.42000</DotNetVersion>
