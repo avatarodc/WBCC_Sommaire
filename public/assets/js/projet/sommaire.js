@@ -557,7 +557,6 @@ function deleteSection(sectionId) {
         localStorage.removeItem('activeSection');
     }
 
-    // Au lieu d'utiliser confirm(), on affiche la modal
     $('#deleteSectionModal')
         .data('sectionId', sectionId) // Stocke l'ID de la section à supprimer
         .modal('show');

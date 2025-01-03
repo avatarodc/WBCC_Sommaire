@@ -178,10 +178,4 @@
     } */
 
 
-    #saveConfirmationModal .modal-content {
-        border-radius: 0.3rem;
-    }
-
-    #saveConfirmationModal .modal-body {
-        padding-bottom: 1.5rem;
-    }
+   
